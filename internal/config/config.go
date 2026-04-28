@@ -34,7 +34,7 @@ func Load() (*Config, error) {
 	}
 
 	cfg := &Config{
-		AppPort: getEnv("APP_PORT", "8080"),
+		AppPort: getEnv("APP_PORT", "3000"),
 		AppEnv:  getEnv("APP_ENV", "development"),
 		AppName: "Goldencare API v1.0",
 
