@@ -15,14 +15,12 @@ import (
 func SeedSuperadmin(repo repository.Repository, cfg *config.Config) {
 	ctx := context.Background()
 
-	// cek existing superadmin
 	user, err := repo.User().FindByEmail(ctx, "admin@goldencare.com")
 	if err == nil && user != nil {
 		log.Println("Superadmin already exists")
 		return
 	}
 
-	// WAJIB dari ENV
 	pass := cfg.SuperadminPassword
 	if pass == "" {
 		log.Fatal("SUPERADMIN_PASSWORD is not set in environment")
