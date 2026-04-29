@@ -15,7 +15,7 @@ type Container struct {
 	Config     *config.Config
 	DB         *sqlx.DB
 	Repository repository.Repository
-	Service    services.Service
+	Service    service.Service
 }
 
 func NewContainer() (*Container, error) {
@@ -34,7 +34,7 @@ func NewContainer() (*Container, error) {
 	repo := repository.NewPostgresRepository(db)
 	log.Println("Repository initialized")
 
-	svc := services.NewService(repo, cfg)
+	svc := service.NewService(repo, cfg)
 	log.Println("Services initialized")
 
 	seed.SeedSuperadmin(repo, cfg)
