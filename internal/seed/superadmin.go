@@ -15,40 +15,35 @@ import (
 func SeedSuperadmin(repo repository.Repository, cfg *config.Config) {
 	ctx := context.Background()
 
-	existing, err := repo.User().FindSuperadmin(ctx)
-	if err != nil {
-		log.Println("error check superadmin:", err)
+	// cek existing superadmin
+	user, err := repo.User().FindByEmail(ctx, "admin@goldencare.com")
+	if err == nil && user != nil {
+		log.Println("Superadmin already exists")
 		return
 	}
 
-	if existing != nil {
-		log.Println("superadmin already exists, skipping seed")
-		return
+	// WAJIB dari ENV
+	pass := cfg.SuperadminPassword
+	if pass == "" {
+		log.Fatal("SUPERADMIN_PASSWORD is not set in environment")
 	}
 
-	if cfg.SuperadminPassword == "" {
-		log.Fatal("SUPERADMIN_PASSWORD is not set in env")
-	}
-
-	passwordHash, err := bcrypt.GenerateFromPassword(
-		[]byte(cfg.SuperadminPassword),
-		bcrypt.DefaultCost,
-	)
+	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatal("failed to hash password:", err)
+		log.Fatalf("bcrypt error: %v", err)
 	}
 
 	superadmin := &models.User{
 		ID:       uuid.New(),
 		Name:     "Super Admin",
 		Email:    "admin@goldencare.com",
-		Password: string(passwordHash),
+		Password: string(hash),
 		Role:     "superadmin",
 	}
 
 	if err := repo.User().Create(ctx, superadmin); err != nil {
-		log.Fatal("failed to create superadmin:", err)
+		log.Fatalf("failed insert superadmin: %v", err)
 	}
 
-	log.Println("superadmin seeded successfully")
+	log.Println("Superadmin CREATED FROM ENV SUCCESSFULLY")
 }
