@@ -3,31 +3,33 @@ version: "3.9"
 services:
   app:
     build: .
-    container_name: Goldencare
+    container_name: goldencare-app
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3000}:3000"
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: 987654321
-      DB_NAME: rawat_kasih
-    restart: always
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - goldencare-net
 
   db:
     image: postgres:15
-    container_name: Goldencare-db
-    ports:
-      - "5432:5432"
+    container_name: goldencare-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 987654321
-      POSTGRES_DB: rawat_kasih
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: always
+    restart: unless-stopped
+    networks:
+      - goldencare-net
 
 volumes:
   postgres_data:
+
+networks:
+  goldencare-net:
+    driver: bridge
