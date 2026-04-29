@@ -37,3 +37,4 @@ func (r *superadminRepository) Create(ctx context.Context, superadmin *models.Su
 	`, superadmin.ID, superadmin.Email, superadmin.Password, superadmin.Name, superadmin.CreatedAt)
 	return err
 }
+

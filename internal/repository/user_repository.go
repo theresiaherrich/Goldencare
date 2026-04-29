@@ -15,6 +15,7 @@ type UserRepository interface {
 	GetByID(ctx context.Context, id string) (*models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id string) error
+	FindSuperadmin(ctx context.Context) (*models.User, error)
 }
 
 type userRepository struct {
@@ -83,4 +84,21 @@ func (r *userRepository) Delete(ctx context.Context, id string) error {
 		return errors.New("user not found")
 	}
 	return nil
+}
+
+func (r *userRepository) FindSuperadmin(ctx context.Context) (*models.User, error) {
+	var user models.User
+
+	err := r.db.GetContext(ctx, &user, `
+		SELECT id, name, email, password, role, created_at
+		FROM users
+		WHERE role = 'superadmin'
+		LIMIT 1
+	`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

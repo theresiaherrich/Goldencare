@@ -22,6 +22,8 @@ type Config struct {
 
 	JWTSecret      string
 	JWTExpireHours int
+	
+	SuperadminPassword string
 
 	SupabaseURL        string
 	SupabaseAnonKey    string
@@ -46,6 +48,8 @@ func Load() (*Config, error) {
 
 		JWTSecret:      os.Getenv("JWT_SECRET"),
 		JWTExpireHours: getEnvInt("JWT_EXPIRE_HOURS", 72),
+
+		SuperadminPassword: os.Getenv("SUPERADMIN_PASSWORD"),
 
 		SupabaseURL:        os.Getenv("SUPABASE_URL"),
 		SupabaseAnonKey:    os.Getenv("SUPABASE_ANON_KEY"),

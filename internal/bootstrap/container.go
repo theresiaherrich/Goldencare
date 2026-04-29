@@ -8,13 +8,14 @@ import (
 	"github.com/theresiaherrich/Goldencare/internal/database"
 	"github.com/theresiaherrich/Goldencare/internal/repository"
 	"github.com/theresiaherrich/Goldencare/internal/services"
+	"github.com/theresiaherrich/Goldencare/internal/seed"
 )
 
 type Container struct {
 	Config     *config.Config
 	DB         *sqlx.DB
 	Repository repository.Repository
-	Service    service.Service
+	Service    services.Service
 }
 
 func NewContainer() (*Container, error) {
@@ -32,9 +33,13 @@ func NewContainer() (*Container, error) {
 
 	repo := repository.NewPostgresRepository(db)
 	log.Println("Repository initialized")
-	svc := service.NewService(repo, cfg)
 
+	svc := services.NewService(repo, cfg)
 	log.Println("Services initialized")
+
+	seed.SeedSuperadmin(repo, cfg)
+
+	log.Println("Superadmin seed checked")
 
 	return &Container{
 		Config:     cfg,
