@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/theresiaherrich/Goldencare/internal/middleware"
 	"github.com/theresiaherrich/Goldencare/internal/models"
-	service "github.com/theresiaherrich/Goldencare/internal/services"
+	"github.com/theresiaherrich/Goldencare/internal/services"
 	"github.com/theresiaherrich/Goldencare/pkg/utils"
 )
 
@@ -19,23 +19,17 @@ func NewLansiaHandler(lansiaService service.LansiaService) *LansiaHandler {
 	return &LansiaHandler{lansiaService: lansiaService}
 }
 
-func (h *LansiaHandler) GetDashboard(c *fiber.Ctx) error {
-	pantiID := middleware.GetPantiID(c)
-	if pantiID == "" {
-		return utils.BadRequest(c, "Anda belum terdaftar di panti")
-	}
-	dashboard, err := h.lansiaService.GetDashboard(c.Context(), pantiID)
-	if err != nil {
-		return utils.InternalError(c, err.Error())
-	}
-	return utils.OK(c, "Dashboard profil lansia", dashboard)
-}
-
 func (h *LansiaHandler) GetAll(c *fiber.Ctx) error {
 	pantiID := middleware.GetPantiID(c)
+
+	if middleware.IsSuperadmin(c) {
+		pantiID = c.Query("panti_id", pantiID)
+	}
+
 	if pantiID == "" {
 		return utils.BadRequest(c, "Anda belum terdaftar di panti")
 	}
+
 	filters := make(map[string]interface{})
 	if kamar := c.Query("kamar"); kamar != "" {
 		filters["kamar"] = kamar
@@ -53,21 +47,49 @@ func (h *LansiaHandler) GetAll(c *fiber.Ctx) error {
 func (h *LansiaHandler) GetByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	pantiID := middleware.GetPantiID(c)
-	if pantiID == "" {
-		return utils.BadRequest(c, "Anda belum terdaftar di panti")
-	}
+
 	lansia, err := h.lansiaService.GetByID(c.Context(), id)
 	if err != nil {
 		return utils.NotFound(c, "Lansia tidak ditemukan")
 	}
-	if lansia.PantiID.String() != pantiID {
-		return utils.Forbidden(c, "Anda tidak memiliki akses ke lansia ini")
+
+	if !middleware.IsSuperadmin(c) {
+		if pantiID == "" {
+			return utils.BadRequest(c, "Anda belum terdaftar di panti")
+		}
+		if lansia.PantiID.String() != pantiID {
+			return utils.Forbidden(c, "Anda tidak memiliki akses ke lansia ini")
+		}
 	}
+
 	return utils.OK(c, "Detail lansia", lansia)
+}
+
+func (h *LansiaHandler) GetDashboard(c *fiber.Ctx) error {
+	pantiID := middleware.GetPantiID(c)
+
+	if middleware.IsSuperadmin(c) {
+		pantiID = c.Query("panti_id", pantiID)
+	}
+
+	if pantiID == "" {
+		return utils.BadRequest(c, "Anda belum terdaftar di panti")
+	}
+
+	dashboard, err := h.lansiaService.GetDashboard(c.Context(), pantiID)
+	if err != nil {
+		return utils.InternalError(c, err.Error())
+	}
+	return utils.OK(c, "Dashboard profil lansia", dashboard)
 }
 
 func (h *LansiaHandler) Create(c *fiber.Ctx) error {
 	pantiID := middleware.GetPantiID(c)
+
+	if middleware.IsSuperadmin(c) {
+		pantiID = c.Query("panti_id", pantiID)
+	}
+
 	if pantiID == "" {
 		return utils.BadRequest(c, "Anda belum terdaftar di panti")
 	}
@@ -132,12 +154,17 @@ func (h *LansiaHandler) Create(c *fiber.Ctx) error {
 }
 
 func (h *LansiaHandler) Update(c *fiber.Ctx) error {
-	id := c.Params("id")
 	pantiID := middleware.GetPantiID(c)
+
+	if middleware.IsSuperadmin(c) {
+		pantiID = c.Query("panti_id", pantiID)
+	}
+
 	if pantiID == "" {
 		return utils.BadRequest(c, "Anda belum terdaftar di panti")
 	}
 
+	id := c.Params("id")
 	lansia, err := h.lansiaService.GetByID(c.Context(), id)
 	if err != nil {
 		return utils.NotFound(c, "Lansia tidak ditemukan")

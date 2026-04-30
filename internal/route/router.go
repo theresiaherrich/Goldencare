@@ -29,6 +29,7 @@ func RegisterRoutes(app *fiber.App, container *bootstrap.Container) {
 
 	registerHealthRoutes(api, container)
 	registerPublicRoutes(api, deps)
+	 registerProtectedRoutes(api, deps, container)
 }
 
 func buildDependencies(container *bootstrap.Container) *AppDependencies {

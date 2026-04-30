@@ -92,3 +92,15 @@ func GetPantiID(c *fiber.Ctx) string {
 	}
 	return pantiID.(string)
 }
+
+func GetPantiIDOrDefault(c *fiber.Ctx, defaultPantiID string) string {
+	role := GetRole(c)
+	if role == "superadmin" {
+		return defaultPantiID
+	}
+	return GetPantiID(c)
+}
+
+func IsSuperadmin(c *fiber.Ctx) bool {
+	return GetRole(c) == "superadmin"
+}
