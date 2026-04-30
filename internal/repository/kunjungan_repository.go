@@ -35,12 +35,24 @@ func (r *kunjunganRepository) Create(ctx context.Context, kunjungan *models.Kunj
 func (r *kunjunganRepository) GetByLansia(ctx context.Context, lansiaID string) ([]models.KunjunganKeluarga, error) {
 	var results []models.KunjunganKeluarga
 	err := r.db.SelectContext(ctx, &results, `
-		SELECT kk.*, u.name AS nama_pengurus
-		FROM kunjungan_keluarga kk
-		JOIN users u ON u.id = kk.pengurus_id
-		WHERE kk.lansia_id = $1
-		ORDER BY kk.tanggal_kunjungan DESC
-	`, lansiaID)
+    SELECT 
+        kk.id,
+        kk.lansia_id,
+        kk.pengurus_id,
+        kk.nama_keluarga,
+        kk.hubungan_keluarga,
+        kk.tanggal_kunjungan,
+        kk.durasi_menit,
+        COALESCE(kk.foto_url, '') AS foto_url,
+        COALESCE(kk.catatan, '') AS catatan,
+        COALESCE(kk.respon_lansia, '') AS respon_lansia,
+        kk.created_at,
+        u.name AS nama_pengurus
+    FROM kunjungan_keluarga kk
+    JOIN users u ON u.id = kk.pengurus_id
+    WHERE kk.lansia_id = $1
+    ORDER BY kk.tanggal_kunjungan DESC
+`, lansiaID)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +62,19 @@ func (r *kunjunganRepository) GetByLansia(ctx context.Context, lansiaID string) 
 func (r *kunjunganRepository) GetTerbaru(ctx context.Context, lansiaID string, limit int) ([]models.KunjunganKeluarga, error) {
 	var results []models.KunjunganKeluarga
 	err := r.db.SelectContext(ctx, &results, `
-		SELECT kk.*, u.name AS nama_pengurus
+		SELECT 
+			kk.id,
+			kk.lansia_id,
+			kk.pengurus_id,
+			kk.nama_keluarga,
+			kk.hubungan_keluarga,
+			kk.tanggal_kunjungan,
+			kk.durasi_menit,
+			COALESCE(kk.foto_url, '') AS foto_url,
+			COALESCE(kk.catatan, '') AS catatan,
+			COALESCE(kk.respon_lansia, '') AS respon_lansia,
+			kk.created_at,
+			u.name AS nama_pengurus
 		FROM kunjungan_keluarga kk
 		JOIN users u ON u.id = kk.pengurus_id
 		WHERE kk.lansia_id = $1
