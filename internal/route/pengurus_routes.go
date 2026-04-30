@@ -23,10 +23,11 @@ func registerPengurusRoutes(
 	registerObatRoutes(protected, pengurus, obatHandler)
 
 	pengurus.Get("/dashboard", pengurusHandler.GetDashboard)
-	pengurus.Get("", pengurusHandler.GetAll)
-	pengurus.Get(":user_id", pengurusHandler.GetByID)
-	pengurus.Post("/profil", pengurusHandler.SetProfil)
 	pengurus.Get("/shift-saya", pengurusHandler.GetShiftSaya)
-	pengurus.Get("/lansia", lansiaHandler.GetAll)
-	pengurus.Get("/lansia/:id", lansiaHandler.GetByID)
+	pengurus.Get("/profil", pengurusHandler.SetProfil) 
+	pengurus.Post("/profil", pengurusHandler.SetProfil)
+	pengurus.Get("/lansia", lansiaHandler.GetAll)     
+	pengurus.Get("/lansia/:id", lansiaHandler.GetByID) 
+	pengurus.Get("", pengurusHandler.GetAll)
+	pengurus.Get("/:user_id", pengurusHandler.GetByID)
 }
