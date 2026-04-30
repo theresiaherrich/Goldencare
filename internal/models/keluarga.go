@@ -7,18 +7,18 @@ import (
 )
 
 type KunjunganKeluarga struct {
-	ID               uuid.UUID `db:"id"                json:"id"`
-	LansiaID         uuid.UUID `db:"lansia_id"         json:"lansia_id"`
-	PengurusID       uuid.UUID `db:"pengurus_id"       json:"pengurus_id"`
-	NamaKeluarga     string    `db:"nama_keluarga"     json:"nama_keluarga"`
-	HubunganKeluarga string    `db:"hubungan_keluarga" json:"hubungan_keluarga"`
-	TanggalKunjungan time.Time `db:"tanggal_kunjungan" json:"tanggal_kunjungan"`
-	DurasiMenit      int       `db:"durasi_menit"      json:"durasi_menit"`
-	FotoURL          string    `db:"foto_url"          json:"foto_url"`
-	Catatan          string    `db:"catatan"           json:"catatan"`
-	ResponLansia     string    `db:"respon_lansia"     json:"respon_lansia"`
-	CreatedAt        time.Time `db:"created_at"        json:"created_at"`
-	NamaPengurus     string    `db:"nama_pengurus" json:"nama_pengurus,omitempty"`
+    ID               uuid.UUID  `db:"id"                json:"id"`
+    LansiaID         uuid.UUID  `db:"lansia_id"         json:"lansia_id"`
+    PengurusID       uuid.UUID  `db:"pengurus_id"       json:"pengurus_id"`
+    NamaKeluarga     *string    `db:"nama_keluarga"     json:"nama_keluarga"`
+    HubunganKeluarga *string    `db:"hubungan_keluarga" json:"hubungan_keluarga"`
+    TanggalKunjungan time.Time  `db:"tanggal_kunjungan" json:"tanggal_kunjungan"`
+    DurasiMenit      *int       `db:"durasi_menit"      json:"durasi_menit"`
+    FotoURL          *string    `db:"foto_url"          json:"foto_url"`
+    Catatan          *string    `db:"catatan"           json:"catatan"`
+    ResponLansia     *string    `db:"respon_lansia"     json:"respon_lansia"`
+    CreatedAt        time.Time  `db:"created_at"        json:"created_at"`
+    NamaPengurus     string     `db:"nama_pengurus"     json:"nama_pengurus,omitempty"`
 }
 
 type CreateKunjunganRequest struct {
