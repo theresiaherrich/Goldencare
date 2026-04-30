@@ -11,7 +11,7 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 
 	protected.Get("/auth/me", deps.AuthHandler.Me)
 
-	pengelola := protected.Group("/pengelola", middleware.RequireRole("pengelola"))
+	pengelola := protected.Group("/pengelola", middleware.RequireRole("pengelola, superadmin"))
 	registerPengelolaRoutes(
 		pengelola,
 		deps.PantiHandler,
@@ -20,7 +20,7 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		deps.PengurusHandler,
 	)
 
-	pengurus := protected.Group("/pengurus", middleware.RequireRole("pengurus"))
+	pengurus := protected.Group("/pengurus", middleware.RequireRole("pengurus, superadmin"))
 	registerPengurusRoutes(
 		protected,
 		pengurus,
@@ -32,33 +32,9 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		deps.PengurusHandler,
 	)
 
-	keluarga := protected.Group("/keluarga", middleware.RequireRole("keluarga"))
+	keluarga := protected.Group("/keluarga", middleware.RequireRole("keluarga, superadmin"))
 	registerKeluargaRoutes(
 		keluarga,
-		deps.KeluargaHandler,
-	)
-
-	// Superadmin: akses ke semua group sekaligus
-	superadmin := protected.Group("/superadmin", middleware.RequireRole("superadmin"))
-	registerPengelolaRoutes(
-		superadmin,
-		deps.PantiHandler,
-		deps.AuthHandler,
-		deps.LansiaHandler,
-		deps.PengurusHandler,
-	)
-	registerPengurusRoutes(
-		protected,
-		superadmin,
-		deps.GaleriHandler,
-		deps.CatatanShiftHandler,
-		deps.PemeriksaanHandler,
-		deps.KunjunganHandler,
-		deps.ObatHandler,
-		deps.PengurusHandler,
-	)
-	registerKeluargaRoutes(
-		superadmin,
 		deps.KeluargaHandler,
 	)
 }
