@@ -108,6 +108,8 @@ func (s *authService) Register(ctx context.Context, req *models.RegisterRequest)
 			return nil, fmt.Errorf("gagal membuat panti: %w", err)
 		}
 		user.PantiID = &panti.ID
+	} else if kode.PantiID != nil {
+		user.PantiID = kode.PantiID
 	}
 
 	if err := s.repo.User().Create(ctx, user); err != nil {

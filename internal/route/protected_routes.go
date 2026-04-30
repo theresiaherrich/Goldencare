@@ -11,7 +11,7 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 
 	protected.Get("/auth/me", deps.AuthHandler.Me)
 
-	pengelola := protected.Group("/pengelola", middleware.RequireRole("pengelola, superadmin"))
+	pengelola := protected.Group("/pengelola", middleware.RequireRole("pengelola", "superadmin"))
 	registerPengelolaRoutes(
 		pengelola,
 		deps.PantiHandler,
@@ -20,7 +20,7 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		deps.PengurusHandler,
 	)
 
-	pengurus := protected.Group("/pengurus", middleware.RequireRole("pengurus, superadmin"))
+	pengurus := protected.Group("/pengurus", middleware.RequireRole("pengurus", "superadmin"))
 	registerPengurusRoutes(
 		protected,
 		pengurus,
@@ -33,7 +33,7 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		deps.LansiaHandler,
 	)
 
-	keluarga := protected.Group("/keluarga", middleware.RequireRole("keluarga, superadmin"))
+	keluarga := protected.Group("/keluarga", middleware.RequireRole("keluarga", "superadmin"))
 	registerKeluargaRoutes(
 		keluarga,
 		deps.KeluargaHandler,
