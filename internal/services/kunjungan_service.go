@@ -53,13 +53,13 @@ func (s *kunjunganService) Create(ctx context.Context, req *models.CreateKunjung
 		ID:               uuid.New(),
 		LansiaID:         req.LansiaID,
 		PengurusID:       uuid.MustParse(pengurusID),
-		NamaKeluarga:     req.NamaKeluarga,
-		HubunganKeluarga: req.HubunganKeluarga,
+		NamaKeluarga:     strPtr(req.NamaKeluarga),
+		HubunganKeluarga: strPtr(req.HubunganKeluarga),
 		TanggalKunjungan: tanggalKunjungan,
-		DurasiMenit:      req.DurasiMenit,
-		FotoURL:          req.FotoURL,
-		Catatan:          req.Catatan,
-		ResponLansia:     req.ResponLansia,
+		DurasiMenit:      intPtr(req.DurasiMenit),
+		FotoURL:          strPtr(req.FotoURL),
+		Catatan:          strPtr(req.Catatan),
+		ResponLansia:     strPtr(req.ResponLansia),
 		CreatedAt:        time.Now(),
 	}
 
@@ -67,4 +67,18 @@ func (s *kunjunganService) Create(ctx context.Context, req *models.CreateKunjung
 		return nil, err
 	}
 	return kunjungan, nil
+}
+
+func strPtr(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}
+
+func intPtr(i int) *int {
+	if i == 0 {
+		return nil
+	}
+	return &i
 }
