@@ -61,6 +61,10 @@ func RequireRole(roles ...string) fiber.Handler {
 			return utils.Unauthorized(c, "Role tidak ditemukan")
 		}
 
+		if userRole == "superadmin" {
+			return c.Next()
+		}
+
 		for _, role := range roles {
 			if userRole == role {
 				return c.Next()
