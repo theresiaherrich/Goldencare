@@ -14,6 +14,7 @@ func registerPengurusRoutes(
 	kunjunganHandler *handlers.KunjunganHandler,
 	obatHandler *handlers.ObatHandler,
 	pengurusHandler *handlers.PengurusHandler,
+	lansiaHandler *handlers.LansiaHandler,
 ) {
 	registerGaleriRoutes(protected, pengurus, galeriHandler)
 	registerCatatanShiftRoutes(protected, pengurus, catatanShiftHandler)
@@ -26,4 +27,6 @@ func registerPengurusRoutes(
 	pengurus.Get(":user_id", pengurusHandler.GetByID)
 	pengurus.Post("/profil", pengurusHandler.SetProfil)
 	pengurus.Get("/shift-saya", pengurusHandler.GetShiftSaya)
+	pengurus.Get("/lansia", lansiaHandler.GetAll)
+	pengurus.Get("/lansia/:id", lansiaHandler.GetByID)
 }

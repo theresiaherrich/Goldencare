@@ -30,11 +30,13 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		deps.KunjunganHandler,
 		deps.ObatHandler,
 		deps.PengurusHandler,
+		deps.LansiaHandler,
 	)
 
 	keluarga := protected.Group("/keluarga", middleware.RequireRole("keluarga, superadmin"))
 	registerKeluargaRoutes(
 		keluarga,
 		deps.KeluargaHandler,
+		deps.LansiaHandler,
 	)
 }
