@@ -37,4 +37,28 @@ func registerProtectedRoutes(api fiber.Router, deps *AppDependencies, container 
 		keluarga,
 		deps.KeluargaHandler,
 	)
+
+	// Superadmin: akses ke semua group sekaligus
+	superadmin := protected.Group("/superadmin", middleware.RequireRole("superadmin"))
+	registerPengelolaRoutes(
+		superadmin,
+		deps.PantiHandler,
+		deps.AuthHandler,
+		deps.LansiaHandler,
+		deps.PengurusHandler,
+	)
+	registerPengurusRoutes(
+		protected,
+		superadmin,
+		deps.GaleriHandler,
+		deps.CatatanShiftHandler,
+		deps.PemeriksaanHandler,
+		deps.KunjunganHandler,
+		deps.ObatHandler,
+		deps.PengurusHandler,
+	)
+	registerKeluargaRoutes(
+		superadmin,
+		deps.KeluargaHandler,
+	)
 }
